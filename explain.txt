@@ -1,0 +1,3 @@
+the HandTracking.py is the basic file to run the hand tracking script.
+
+HandTrackingModule.py is the file that contains the class for the hand tracking. which then can be imported in the main file as a library.

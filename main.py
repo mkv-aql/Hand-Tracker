@@ -1,16 +1,30 @@
-# This is a sample Python script.
+import cv2
+import HandTrackingModule as htm
+import time
+# For fps
+pTime = 0
+cTime = 0
 
-# Press Umschalt+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
+cap = cv2.VideoCapture(0)
+# Calling the class
+detector = htm.HandDetector()
 
+while True:
+    success, img = cap.read()
+    img = detector.findHands(img, draw = True) # draw = False to get rid of the hand lines
+    lmList = detector.findPosition(img, draw = True) # draw = False to avoid drawing the circles on the chosen landmarks, but still tracks location of the landmarks
+    # If there are landmarks detected, print the position of the tip of the index finger. Also to avoid index out of range error.
+    if len(lmList) != 0:
+        print(lmList[8]) # Print the position of the tip of the index finger
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Strg+F8 to toggle the breakpoint.
+    # For fps calculation
+    cTime = time.time()
+    fps = 1 / (cTime - pTime)
+    pTime = cTime
+    # Draw fps on image
+    cv2.putText(img, str(int(fps)), (10, 35), cv2.FONT_HERSHEY_PLAIN, 2, (255, 0, 255), 2)
 
-
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
-
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+    cv2.imshow("Image", img)
+    # waitKey with q
+    if cv2.waitKey(1) & 0xFF == ord('q'):
+        break

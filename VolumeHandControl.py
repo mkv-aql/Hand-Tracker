@@ -11,8 +11,8 @@ wCam, hCam = 640, 480
 
 
 cap = cv2.VideoCapture(0)
-cap.set(3, wCam)
-cap.set(4, hCam)
+cap.set(3, wCam)#3 corresponds to 'CV_CAP_PROP_FRAME_WIDTH', then itsets the width of the video
+cap.set(4, hCam) #4 corresponds to 'CV_CAP_PROP_FRAME_HEIGHT', then it sets the height of the video
 
 #for fps
 pTime = 0
@@ -49,7 +49,7 @@ while True:
 
     #Find hand landmarks
     img = detector.findHands(img)
-    lmList = detector.findPosition(img, draw=False) #draw=False to avoid drawing the circles on the chosen landmarks, because it is done below
+    lmList, null = detector.findPosition(img, draw=False) #draw=False to avoid drawing the circles on the chosen landmarks, because it is done below.  #Because the findPosition function returns two values, the second one is not needed so it is assigned to null
     if len(lmList) != 0:
         #print(lmList[4], lmList[8]) #Print the position of the tip of the index finger and the tip of the thumb
         x1, y1 = lmList[4][1], lmList[4][2] #x1, y1 are the coordinates of the tip of the thumb finger

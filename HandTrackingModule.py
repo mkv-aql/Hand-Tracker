@@ -73,6 +73,9 @@ class HandDetector():
                     #Highlight the landmark with a circle of id no. 8 (tip of the index finger)
                     if id == 8:
                         cv2.circle(img, (cx, cy), 5, (255, 255, 0), cv2.FILLED)  # Draw a circle on the tip of the thumb
+                    # Highlight the landmark with a circle of id no. 0 (palm)
+                    if id == 0:
+                        cv2.circle(img, (cx, cy), 5, (255, 255, 255), cv2.FILLED)  # Draw a circle on the tip of the thumb
 
             #FIND THE MINIMUM AND MAXIMUM X AND Y VALUES OF THE LANDMARKS (15.4.2023)
             xmin, xmax = min(xList), max(xList)

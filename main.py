@@ -12,7 +12,7 @@ detector = htm.HandDetector()
 while True:
     success, img = cap.read()
     img = detector.findHands(img, draw = True) # draw = False to get rid of the hand lines
-    lmList = detector.findPosition(img, draw = True) # draw = False to avoid drawing the circles on the chosen landmarks, but still tracks location of the landmarks
+    lmList, null = detector.findPosition(img, draw = True) # draw = False to avoid drawing the circles on the chosen landmarks, but still tracks location of the landmarks #Because the findPosition function returns two values, the second one is not needed so it is assigned to null
     # If there are landmarks detected, print the position of the tip of the index finger. Also to avoid index out of range error.
     if len(lmList) != 0:
         print(lmList[8]) # Print the position of the tip of the index finger

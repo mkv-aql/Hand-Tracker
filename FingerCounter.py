@@ -38,8 +38,8 @@ while True:
             print("Finger is open")
             fingers.append(1)
         else:
-            fingers.append(0)
             print("Finger is closed")
+            fingers.append(0)
 
         #FIngers
         for id in range(1,5):

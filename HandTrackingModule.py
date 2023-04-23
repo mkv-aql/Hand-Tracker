@@ -4,12 +4,16 @@ Update 15.4.2023:
 -Added fingersUp function (in Class) to detect how many fingers are up
 -findPosition function editted: to fund the maximum x and y and minmum x and y values of the landmarks. (This is to find the bounding box of the hand)
 -Added findDistance function to find the distance between two landmarks
+
+Update 23.4.2023:
+-Added the left and right hand detection (in findPosition Class)
 '''
 import cv2
 import mediapipe as mp
 import time
 import numpy as np
 import math
+from matplotlib import pyplot as plt
 
 
 class HandDetector():
@@ -58,6 +62,7 @@ class HandDetector():
             myHand = self.results.multi_hand_landmarks[handNo]
 
             for id, lm in enumerate(myHand.landmark):
+                lr = self.results.multi_handedness[handNo].classification[handNo].label # Left or right hand (23.4.2023)
                 h, w, c = img.shape
                 cx, cy = int(lm.x * w), int(lm.y * h)
                     #Append cx, cy values into the list (15.4.2023)
@@ -65,7 +70,7 @@ class HandDetector():
                 yList.append(cy)
 
                 #print(id, cx, cy)  # id is the landmark id no. and lm is the landmark location. id = 0 is the palm of the hand, id = 4 is thw tip of the thumb
-                self.lmList.append([id, cx, cy])
+                self.lmList.append([id, cx, cy, lr])
                 if draw:
                     #Highlight the landmark with a circle of id no. 4 (tip of the thumb)
                     if id == 4:
@@ -76,6 +81,7 @@ class HandDetector():
                     # Highlight the landmark with a circle of id no. 0 (palm)
                     if id == 0:
                         cv2.circle(img, (cx, cy), 5, (255, 255, 255), cv2.FILLED)  # Draw a circle on the tip of the thumb
+                        cv2.putText(img, str(lr), (cx, cy), cv2.FONT_HERSHEY_PLAIN, 1, (255, 0, 0), 2)  # Draw the left or right hand on the palm (23.4.2023)
 
             #FIND THE MINIMUM AND MAXIMUM X AND Y VALUES OF THE LANDMARKS (15.4.2023)
             xmin, xmax = min(xList), max(xList)
@@ -105,9 +111,9 @@ class HandDetector():
         return fingers # Return a list of 5 elements (0 or 1) to indicate if the finger is up or not
 
     # Find the distance between two landmarks (p1 and p2 are the landmark id no.)
-    def findDistance(self, p1, p2, img, draw =True, drawLength = True):
+    def findDistance(self, img, p1, p2, draw =True, drawLength = True):
         x1, y1 = self.lmList[p1][1], self.lmList[p1][2]  # x1, y1 are the coordinates of the tip of the thumb finger
-        x2, y2 = self.lmList[p2][1], self.lmList[p2][2]  # x1, y1 are the coordinates of the tip of the index finger
+        x2, y2 = self.lmList[p2][1], self.lmList[p2][2]  # x2, y2 are the coordinates of the tip of the index finger
         cx, cy = (x1 + x2) // 2, (
                     y1 + y2) // 2  # cx, cy are the coordinates of the center of the line between the tip of the thumb and the tip of the index finger (center of the line between the two fingers)
 
@@ -126,6 +132,33 @@ class HandDetector():
             print("Length: ", int(length))
 
         return length, img, [x1, y1, x2, y2, cx, cy]
+
+    def findAngle(self, img, p1, p2, p3, pt1, pt2, pt3, handNo = 0, draw = True):
+        jointList = [[p1, p2, p3], [pt1, pt2, pt3]]
+        test = []
+        angle = 0
+        #coordinates x y
+        x1, y1 = self.lmList[p1][1], self.lmList[p1][2]
+        x2, y2 = self.lmList[p2][1], self.lmList[p2][2]
+        x3, y3 = self.lmList[p3][1], self.lmList[p3][2]
+
+        if self.results.multi_hand_landmarks:
+
+            for myHand in self.results.multi_hand_landmarks:
+
+                for joints in jointList:
+                    a = np.array([x1, y1], np.int32)
+                    b = np.array([x2, y2], np.int32)
+                    c = np.array([x3, y3], np.int32)
+                    radians = np.arctan2(c[1] - b[1], c[0] - b[0]) - np.arctan2(a[1] - b[1], a[0] - b[0])
+                    angle = np.abs(radians*180/np.pi)
+                    if angle > 180:
+                        angle = 360 - angle
+
+        if draw:
+            cv2.putText(img, str(p2), (x2, y2), cv2.FONT_HERSHEY_PLAIN, 1, (255, 0, 0), 2)
+            cv2.putText(img, str(round(angle, 2)), (x2, y2+10), cv2.FONT_HERSHEY_PLAIN, 1, (255, 0, 0), 2)
+        return angle
 
 
 def main():

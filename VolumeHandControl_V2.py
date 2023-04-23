@@ -64,7 +64,7 @@ while True:
         if 250 < area < 1100: #250 is the minimum area, 1100 is the maximum area (the area of the bounding box), in other words it is the distance of the hand from the webcam tolerence
             print("Area is within the range")
             #FIND THE DISTANCE BETWEEN THE TIP OF THE THUMB AND THE TIP OF THE INDEX FINGER
-            length, img, lineInfo = detector.findDistance(4, 8, img, draw=True, drawLength=True) #4 is the tip of the thumb, 8 is the tip of the index finger
+            length, img, lineInfo = detector.findDistance(img, 4, 8, draw=True, drawLength=True) #4 is the tip of the thumb, 8 is the tip of the index finger
 
             #CONVERT THE LENGTH TO VOLUME
 

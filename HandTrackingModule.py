@@ -63,9 +63,15 @@ class HandDetector():
 
             for id, lm in enumerate(myHand.landmark):
                 lr = self.results.multi_handedness[handNo].classification[handNo].label # Left or right hand (23.4.2023)
+                #Left Right correction (23.4.2023)
+                if lr == 'Left':
+                    lr = 'Right'
+                elif lr == 'Right':
+                    lr = 'Left'
+
                 h, w, c = img.shape
                 cx, cy = int(lm.x * w), int(lm.y * h)
-                    #Append cx, cy values into the list (15.4.2023)
+                #Append cx, cy values into the list (15.4.2023)
                 xList.append(cx)
                 yList.append(cy)
 
@@ -81,7 +87,7 @@ class HandDetector():
                     # Highlight the landmark with a circle of id no. 0 (palm)
                     if id == 0:
                         cv2.circle(img, (cx, cy), 5, (255, 255, 255), cv2.FILLED)  # Draw a circle on the tip of the thumb
-                        cv2.putText(img, str(lr), (cx, cy), cv2.FONT_HERSHEY_PLAIN, 1, (255, 0, 0), 2)  # Draw the left or right hand on the palm (23.4.2023)
+                        cv2.putText(img, str(lr), (cx+50, cy), cv2.FONT_HERSHEY_PLAIN, 1, (255, 0, 0), 2)  # Draw the left or right hand on the palm (23.4.2023)
 
             #FIND THE MINIMUM AND MAXIMUM X AND Y VALUES OF THE LANDMARKS (15.4.2023)
             xmin, xmax = min(xList), max(xList)
@@ -135,10 +141,12 @@ class HandDetector():
 
     def findAngle(self, img, p1, p2, p3, handNo = 0, draw = True):
         jointList = [p1, p2, p3]
-        test = []
         angle = 0
         #coordinates x y
-        x1, y1 = self.lmList[p1][1], self.lmList[p1][2]
+        if isinstance(p1, tuple):
+            x1, y1 = p1[1], p1[0] #p1[1] is the x coordinate, p1[0] is the y coordinate (because the coordinates are in the form of (y, x))
+        else:
+            x1, y1 = self.lmList[p1][1], self.lmList[p1][2]
         x2, y2 = self.lmList[p2][1], self.lmList[p2][2]
         x3, y3 = self.lmList[p3][1], self.lmList[p3][2]
 
@@ -157,8 +165,37 @@ class HandDetector():
 
         if draw:
             cv2.putText(img, str(p2), (x2, y2), cv2.FONT_HERSHEY_PLAIN, 1, (255, 0, 0), 2)
-            cv2.putText(img, str(round(angle, 2)), (x2, y2+10), cv2.FONT_HERSHEY_PLAIN, 1, (255, 0, 0), 2)
+            cv2.putText(img, str(round(angle, 2)), (x2, y2+15), cv2.FONT_HERSHEY_PLAIN, 1, (255, 0, 0), 2)
+
         return angle
+
+    def getPosition(self, img, pos, draw = True):
+        #Pixel position
+        h, w, c = img.shape
+        position = {
+            'Top Left': (h*(1/4), w*(1/4)),
+            'Top Center': (h*(1/4), w*(1/2)),
+            'Top Right': (h*(1/4), w*(3/4)),
+            'Center Left': (h//2, w*(1/4)),
+            'Center': (h//2, w*(1/2)),
+            'Center Right': (h//2, w*(3/4)),
+            'Bottom Left': (h*(3/4), w*(1/4)),
+            'Bottom Center': (h*(3/4), w*(1/2)),
+            'Bottom Right': (h*(3/4), w*(3/4))
+        }
+        start = (0,0)
+        end = (w,h)
+        start2 = (w,0)
+        end2 = (0,h)
+        #print(position[pos], "height, width")
+
+        if draw:
+            cv2.line(img, start, end, (255, 0, 255), 1)
+            cv2.line(img, start2, end2, (255, 0, 255), 1)
+            cv2.circle(img, (int(position[pos][1]), int(position[pos][0])), 7, (0, 0, 0), cv2.FILLED)
+
+        return position.get(pos, "Do not exist")
+
 
 
 def main():

@@ -1,4 +1,9 @@
 __author__ = 'mkv-aql'
+'''
+-Angle detection between 3 chosen landmarks. The angle is calculated by using the dot product of the 2 vectors.
+-Angle detection between a chosen coordinate within a webcam frame and 2 chosen landmarks.
+'''
+
 import cv2
 import HandTrackingModule as htm
 import time
@@ -17,7 +22,8 @@ while True:
     # If there are landmarks detected, print the position of the tip of the index finger. Also to avoid index out of range error.
     if len(lmList) != 0:
         print(lmList[7]) # Print the position of the tip of the index finger
-        print(detector.findAngle(img, 8, 7, 6, 12, 11, 10)) # Print the angle between the 3 chosen landmarks (8, 12, 16
+        print(detector.findAngle(img, 8, 7, 6, draw = True)) # Print the angle between the 3 chosen landmarks
+
 
     # For fps calculation
     cTime = time.time()

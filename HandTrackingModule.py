@@ -133,8 +133,8 @@ class HandDetector():
 
         return length, img, [x1, y1, x2, y2, cx, cy]
 
-    def findAngle(self, img, p1, p2, p3, pt1, pt2, pt3, handNo = 0, draw = True):
-        jointList = [[p1, p2, p3], [pt1, pt2, pt3]]
+    def findAngle(self, img, p1, p2, p3, handNo = 0, draw = True):
+        jointList = [p1, p2, p3]
         test = []
         angle = 0
         #coordinates x y

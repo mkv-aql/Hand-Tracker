@@ -1,9 +1,4 @@
 __author__ = 'mkv-aql'
-'''
--Angle detection between 3 chosen landmarks. The angle is calculated by using the dot product of the 2 vectors.
--Angle detection between a chosen coordinate within a webcam frame and 2 chosen landmarks.
-'''
-
 import cv2
 import HandTrackingModule as htm
 import time
@@ -21,12 +16,15 @@ while True:
     lmList, null = detector.findPosition(img, draw = True) # draw = False to avoid drawing the circles on the chosen landmarks, but still tracks location of the landmarks #Because the findPosition function returns two values, the second one is not needed so it is assigned to null
     # If there are landmarks detected, print the position of the tip of the index finger. Also to avoid index out of range error.
     if len(lmList) != 0:
-        #print(lmList[7]) # Print the position of the tip of the index finger
-        #print(detector.findAngle(img, 8, 7, 6, draw = True)) # Print the angle between the 3 chosen landmarks
-        reference = detector.getPosition(img, pos = 'Bottom Center', draw=True) #Get coordinate of the bottom center of the webcam frame
-        print(detector.getPosition(img, pos = 'Bottom Center', draw=True))
-        print(detector.findAngle(img, reference, 0, 5, draw = True)) # Print the angle between the 3 chosen landmarks and the reference coordinate
-
+        length, img, lineInfo = detector.findDistance(img, 5, 17, draw = False, drawLength = True)
+        minPix = 75
+        maxPix = 300
+        minReal = 600
+        maxReal = 150
+        scale = (maxReal - minReal) / (maxPix - minPix) #-1, slope going from top left to bottom right
+        b = minReal - scale * minPix #450, y-intercept
+        realLength = (scale * length) + b #y = mx + b
+        print("Real Length: ", realLength)
 
     # For fps calculation
     cTime = time.time()

@@ -135,11 +135,11 @@ class HandDetector():
         if drawLength:
             # Calculate the length of the line between the 2 points
             length = np.hypot(x2 - x1, y2 - y1)
-            print("Length: ", int(length))
+            print("Pixel Length: ", int(length))
 
         return length, img, [x1, y1, x2, y2, cx, cy]
 
-    def findAngle(self, img, p1, p2, p3, handNo = 0, draw = True):
+    def findAngle(self, img, p1, p2, p3, handNo = 0, draw = True): #p1, p2, p3 are the landmark id no. and p2 will be the pivotal point
         jointList = [p1, p2, p3]
         angle = 0
         #coordinates x y
@@ -195,6 +195,31 @@ class HandDetector():
             cv2.circle(img, (int(position[pos][1]), int(position[pos][0])), 7, (0, 0, 0), cv2.FILLED)
 
         return position.get(pos, "Do not exist")
+
+    def drawBoundariesTest(self, img, p1, draw = True):
+        x1, y1 = self.lmList[p1][1], self.lmList[p1][2]
+        h, w, c = img.shape
+        #Boundaries y1, x1 - y2, x2
+        boundary = (
+            (h//4, w//4),
+            (math.ceil((h*(3/4))), math.ceil(w*(3/4)))
+        )
+
+        if draw:
+            cv2.rectangle(img, (boundary[1][1], boundary[1][0]), (boundary[0][1], boundary[0][0]), (255, 0, 255), 1)
+            cv2.putText(img, str(boundary[1]), (boundary[1][1]+10, boundary[1][0]+10), cv2.FONT_HERSHEY_PLAIN, 1, (255, 0, 255), 1)
+            cv2.putText(img, str(boundary[0]), (boundary[0][1]-10, boundary[0][0]-10), cv2.FONT_HERSHEY_PLAIN, 1, (255, 0, 255), 1)
+
+
+        #print(boundary)
+        if (y1 > boundary[0][0] and y1 < boundary[1][0]) and (x1 > boundary[0][1] and x1 < boundary[1][1]):
+            return True
+        else:
+            return False
+
+    def withinBoundaries(self, img, p1, draw = True):
+
+        return False
 
 
 

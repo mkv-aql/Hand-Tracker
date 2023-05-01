@@ -217,9 +217,26 @@ class HandDetector():
         else:
             return False
 
-    def withinBoundaries(self, img, p1, draw = True):
+    def withinBoundaries(self, img, p1, topLeft, bottomRight, draw = True):
+        x1, y1 = self.lmList[p1][1], self.lmList[p1][2]
+        h, w, c = img.shape
+        TLX, TLY = topLeft[0], topLeft[1]
+        BRX, BRY = bottomRight[0], bottomRight[1]
+        boundary = (
+            (TLY, TLX),
+            (BRY, BRX)
+        )
 
-        return False
+        if draw:
+            cv2.rectangle(img, (boundary[1][1], boundary[1][0]), (boundary[0][1], boundary[0][0]), (255, 0, 255), 1)
+            cv2.putText(img, str(boundary[1]), (boundary[1][1] + 10, boundary[1][0] + 10), cv2.FONT_HERSHEY_PLAIN, 1, (255, 0, 255), 1)
+            cv2.putText(img, str(boundary[0]), (boundary[0][1] - 10, boundary[0][0] - 10), cv2.FONT_HERSHEY_PLAIN, 1, (255, 0, 255), 1)
+
+        # print(boundary)
+        if (y1 > boundary[0][0] and y1 < boundary[1][0]) and (x1 > boundary[0][1] and x1 < boundary[1][1]):
+            return True
+        else:
+            return False
 
 
 

@@ -19,6 +19,7 @@ while True:
         print(lmList[0])
         print(detector.drawBoundariesTest(img, 0, draw = True))
 
+
     # For fps calculation
     cTime = time.time()
     fps = 1 / (cTime - pTime)

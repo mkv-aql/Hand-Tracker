@@ -18,7 +18,7 @@ while True:
     next_gray = cv2.cvtColor(frame2, cv2.COLOR_BGR2GRAY)
 
     # Calculate optical flow
-    next_pts, status, err = cv2.calcOpticalFlowPyrLK(prev_gray, next_gray, prev_pts, None, winSize=(15, 15), maxLevel=2)
+    next_pts, status, err = cv2.calcOpticalFlowPyrLK(prev_gray, next_gray, prev_pts, None, winSize=(50, 50), maxLevel=2)
 
     # Select good points
     good_new = next_pts[status == 1]

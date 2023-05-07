@@ -7,6 +7,12 @@ Update 15.4.2023:
 
 Update 23.4.2023:
 -Added the left and right hand detection (in findPosition Class)
+
+Update 29.4.2023:
+-Added drawBoundaries function to draw the boundaries of the hand (in Class)
+
+Update 1.5.2023:
+-Added withBoundaries function to find the landmarks within the boundaries (in Class)
 '''
 import cv2
 import mediapipe as mp

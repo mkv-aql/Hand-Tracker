@@ -4,6 +4,7 @@ import glfw
 from OpenGL.GL import *
 from OpenGL.GLUT import *
 from OpenGL.GLU import *
+import OpenGLModule as om
 
 width, height = 640, 480
 
@@ -62,8 +63,8 @@ def main():
 
     glMatrixMode(GL_PROJECTION)
     glLoadIdentity()
-    gluPerspective(45, (width / height), 0.1, 50.0)
-    glTranslatef(0.0, 0.0, -5)
+    gluPerspective(45, (width / height), 0.1, 100.0)
+    glTranslatef(0.0, 0.0, -1)
     glEnable(GL_DEPTH_TEST)
 
     angle = 0.0
@@ -73,9 +74,10 @@ def main():
         glMatrixMode(GL_MODELVIEW)
         glLoadIdentity()
 
-        glRotatef(angle, 3, 1, 1)
+        glRotatef(angle, 0.1, 0.1, 0)
 
-        draw_cube()
+        #draw_cube()
+        om.drawCube(0.05, (0,0,0))
 
         glfw.swap_buffers(window)
         glfw.poll_events()

@@ -8,47 +8,6 @@ import OpenGLModule as om
 
 width, height = 640, 480
 
-def draw_cube():
-    glBegin(GL_QUADS)
-
-    glColor3f(0.0, 1.0, 0.0)
-    glVertex3f(1.0, 1.0, -1.0)
-    glVertex3f(-1.0, 1.0, -1.0)
-    glVertex3f(-1.0, 1.0, 1.0)
-    glVertex3f(1.0, 1.0, 1.0)
-
-    glColor3f(1.0, 0.5, 0.0)
-    glVertex3f(1.0, -1.0, 1.0)
-    glVertex3f(-1.0, -1.0, 1.0)
-    glVertex3f(-1.0, -1.0, -1.0)
-    glVertex3f(1.0, -1.0, -1.0)
-
-    glColor3f(1.0, 0.0, 0.0)
-    glVertex3f(1.0, 1.0, 1.0)
-    glVertex3f(-1.0, 1.0, 1.0)
-    glVertex3f(-1.0, -1.0, 1.0)
-    glVertex3f(1.0, -1.0, 1.0)
-
-    glColor3f(1.0, 1.0, 0.0)
-    glVertex3f(1.0, -1.0, -1.0)
-    glVertex3f(-1.0, -1.0, -1.0)
-    glVertex3f(-1.0, 1.0, -1.0)
-    glVertex3f(1.0, 1.0, -1.0)
-
-    glColor3f(0.0, 0.0, 1.0)
-    glVertex3f(-1.0, 1.0, 1.0)
-    glVertex3f(-1.0, 1.0, -1.0)
-    glVertex3f(-1.0, -1.0, -1.0)
-    glVertex3f(-1.0, -1.0, 1.0)
-
-    glColor3f(1.0, 0.0, 1.0)
-    glVertex3f(1.0, 1.0, -1.0)
-    glVertex3f(1.0, 1.0, 1.0)
-    glVertex3f(1.0, -1.0, 1.0)
-    glVertex3f(1.0, -1.0, -1.0)
-
-    glEnd()
-
 def main():
     if not glfw.init():
         return
@@ -76,7 +35,6 @@ def main():
 
         glRotatef(angle, 0.1, 0.1, 0)
 
-        #draw_cube()
         om.drawCube(0.05, (0,0,0))
 
         glfw.swap_buffers(window)

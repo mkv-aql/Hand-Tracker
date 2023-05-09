@@ -20,7 +20,7 @@ while True:
         #point = detector.drawBoundariesTest(img, 0, draw = True)
         topLeft = (213, 160)
         bottomRight = (426, 320)
-        point = detector.withinBoundaries(img, 5, topLeft, bottomRight, draw = True)
+        point = detector.withinBoundaries(img, 5, topLeft, bottomRight, draw = True) # 5 is the index of the tip of the index finger
         print("Point is within boundary: ", point)
         angle1 = detector.findAngle(img, 0, 5, 6, draw=True)
         angle2 = detector.findAngle(img, 5, 6, 7, draw=True)

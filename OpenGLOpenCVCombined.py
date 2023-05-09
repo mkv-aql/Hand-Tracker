@@ -5,49 +5,10 @@ import glfw
 from OpenGL.GL import *
 from OpenGL.GLUT import *
 from OpenGL.GLU import *
+import OpenGLModule as om
 
 width, height = 640, 480
 
-def draw_cube():
-    glBegin(GL_QUADS)
-
-    glColor3f(0.0, 1.0, 0.0)
-    glVertex3f(1.0, 1.0, -1.0)
-    glVertex3f(-1.0, 1.0, -1.0)
-    glVertex3f(-1.0, 1.0, 1.0)
-    glVertex3f(1.0, 1.0, 1.0)
-
-    glColor3f(1.0, 0.5, 0.0)
-    glVertex3f(1.0, -1.0, 1.0)
-    glVertex3f(-1.0, -1.0, 1.0)
-    glVertex3f(-1.0, -1.0, -1.0)
-    glVertex3f(1.0, -1.0, -1.0)
-
-    glColor3f(1.0, 0.0, 0.0)
-    glVertex3f(1.0, 1.0, 1.0)
-    glVertex3f(-1.0, 1.0, 1.0)
-    glVertex3f(-1.0, -1.0, 1.0)
-    glVertex3f(1.0, -1.0, 1.0)
-
-    glColor3f(1.0, 1.0, 0.0)
-    glVertex3f(1.0, -1.0, -1.0)
-    glVertex3f(-1.0, -1.0, -1.0)
-    glVertex3f(-1.0, 1.0, -1.0)
-    glVertex3f(1.0, 1.0, -1.0)
-
-    glColor3f(0.0, 0.0, 1.0)
-    glVertex3f(-1.0, 1.0, 1.0)
-    glVertex3f(-1.0, 1.0, -1.0)
-    glVertex3f(-1.0, -1.0, -1.0)
-    glVertex3f(-1.0, -1.0, 1.0)
-
-    glColor3f(1.0, 0.0, 1.0)
-    glVertex3f(1.0, 1.0, -1.0)
-    glVertex3f(1.0, 1.0, 1.0)
-    glVertex3f(1.0, -1.0, 1.0)
-    glVertex3f(1.0, -1.0, -1.0)
-
-    glEnd()
 
 def main():
     if not glfw.init():
@@ -87,7 +48,7 @@ def main():
 
         glRotatef(angle, 3, 1, 1)
 
-        draw_cube()
+        om.drawCube(scale = 0.5, centerCoords = (0, 0, 0))
 
         glfw.swap_buffers(window)
         glfw.poll_events()
@@ -106,6 +67,8 @@ def main():
         key = cv2.waitKey(1)
 
         if key == 27:  # Escape key to exit
+            break
+        if cv2.waitKey(1) & 0xFF == ord('q'):
             break
 
         angle += 0.5

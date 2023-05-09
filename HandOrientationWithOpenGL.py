@@ -4,6 +4,7 @@ import glfw
 from OpenGL.GL import *
 from OpenGL.GL.shaders import compileProgram, compileShader
 import numpy as np
+import OpenGLModule as om
 
 mp_drawing = mp.solutions.drawing_utils
 mp_hands = mp.solutions.hands
@@ -29,24 +30,6 @@ def hand_landmarks_to_gl_coords(landmark, window_size=(1280, 720), z_scale=1.0):
     z_gl = (0.5 - landmark.z * z_scale) * 2.0
     return x_gl, y_gl, z_gl
 
-def draw_arrow(palm_center, window_size=(1280, 720), scale=0.15):
-    glColor3f(1.0, 0.0, 0.0)  # Set the color to red
-    glPushMatrix()
-    glTranslate(palm_center[0], palm_center[1], palm_center[2])
-    glScale(scale, scale, scale)
-
-    glBegin(GL_LINES)
-    glVertex3f(0.0, 0.0, 0.0)
-    glVertex3f(1.0, 0.0, 0.0)
-    glEnd()
-
-    glBegin(GL_TRIANGLES)
-    glVertex3f(1.0, 0.0, 0.0)
-    glVertex3f(0.85, 0.1, 0.0)
-    glVertex3f(0.85, -0.1, 0.0)
-    glEnd()
-
-    glPopMatrix()
 
 with mp_hands.Hands(min_detection_confidence=0.8, min_tracking_confidence=0.5) as hands:
     while not glfw.window_should_close(window):
@@ -73,8 +56,7 @@ with mp_hands.Hands(min_detection_confidence=0.8, min_tracking_confidence=0.5) a
             )
 
             # Draw the arrow
-            draw_arrow(palm_center)
-            #draw_arrow(0)
+            om.drawArrow(scale = 0.15, centerCoords=palm_center, color=(1.0, 1.0, 0.0))
 
         # Swap buffers and poll events
         glfw.swap_buffers(window)

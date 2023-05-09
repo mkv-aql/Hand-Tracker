@@ -1,9 +1,6 @@
 __author__ = 'mkv-aql'
 '''
-Hand orientation.
--Getting the 3 chosen landmarks of the hand, which are 0, 5, 17.
--Convert the landmarks to a numpy array.
--define the vectors based on the landmarks. (eg. from 0 to 17, from 17 to 5)
+
 '''
 
 import cv2
@@ -27,6 +24,7 @@ while True:
     # If there are landmarks detected, print the position of the tip of the index finger. Also to avoid index out of range error.
     if len(lmList) != 0:
         print(lmList[0]) # Print the position of the tip of the palm
+        print(detector.checkOrientation(img, lr = lmList[0][4])) # Print the orientation of the hand
 
 
 

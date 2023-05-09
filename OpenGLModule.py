@@ -51,3 +51,22 @@ def drawCube(scale, centerCoords):
     glVertex3f(x+1.0*scale, y-1.0*scale, z-1.0*scale)
 
     glEnd()
+
+def drawArrow(scale, centerCoords, color = (1.0, 0.0, 0.0)):
+    glColor3f(color[0], color[1], color[2])  # Set the color to red
+    glPushMatrix()
+    glTranslate(centerCoords[0], centerCoords[1], centerCoords[2])
+    glScale(scale, scale, scale)
+
+    glBegin(GL_LINES)
+    glVertex3f(0.0, 0.0, 0.0)
+    glVertex3f(1.0, 0.0, 0.0)
+    glEnd()
+
+    glBegin(GL_TRIANGLES)
+    glVertex3f(1.0, 0.0, 0.0)
+    glVertex3f(0.85, 0.1, 0.0)
+    glVertex3f(0.85, -0.1, 0.0)
+    glEnd()
+
+    glPopMatrix()

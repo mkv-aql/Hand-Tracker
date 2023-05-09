@@ -77,12 +77,13 @@ class HandDetector():
 
                 h, w, c = img.shape
                 cx, cy = int(lm.x * w), int(lm.y * h)
+                cz = round(self.results.multi_hand_landmarks[-1].landmark[-1].z, 5)
                 #Append cx, cy values into the list (15.4.2023)
                 xList.append(cx)
                 yList.append(cy)
 
                 #print(id, cx, cy)  # id is the landmark id no. and lm is the landmark location. id = 0 is the palm of the hand, id = 4 is thw tip of the thumb
-                self.lmList.append([id, cx, cy, lr])
+                self.lmList.append([id, cx, cy, cz, lr])
                 if draw:
                     #Highlight the landmark with a circle of id no. 4 (tip of the thumb)
                     if id == 4:
@@ -244,6 +245,29 @@ class HandDetector():
         else:
             return False
 
+    def checkOrientation(self, img, lr, tolerance = 0.1):
+        orientation = ''
+        tolerance = tolerance
+        if lr == "Left":
+            if (self.lmList[5][1] < self.lmList[17][1]) and self.lmList[5][2] < self.lmList[0][2] and self.lmList[0][1] > self.lmList[5][1] and self.lmList[0][1] < self.lmList[17][1]:
+                orientation = 'Palm Facing Camera & North'
+            elif (self.lmList[5][1] < self.lmList[17][1]) and self.lmList[5][2] < self.lmList[0][2] and self.lmList[0][1] < self.lmList[5][1] and self.lmList[0][1] < self.lmList[17][1]:
+                orientation = 'Palm Facing Camera & North-East'
+            elif (self.lmList[5][1] < self.lmList[17][1]) and self.lmList[5][2] < self.lmList[0][2] and self.lmList[0][1] > self.lmList[5][1] and self.lmList[0][1] > self.lmList[17][1]:
+                orientation = 'Palm Facing Camera & North-West'
+            elif (self.lmList[0][1] < self.lmList[17][1]) and self.lmList[0][2] > self.lmList[5][2] and self.lmList[0][1] < self.lmList[5][1] and self.lmList[0][2] < self.lmList[17][2]:
+                orientation = 'Palm Facing Camera & East'
+            elif (self.lmList[17][1] < self.lmList[0][1]) and self.lmList[5][2] > self.lmList[0][2] and self.lmList[5][1] < self.lmList[0][1] and self.lmList[17][2] < self.lmList[0][2]:
+                orientation = 'Palm Facing Camera & West'
+            elif (self.lmList[5][1] > self.lmList[17][1]) and self.lmList[5][2] > self.lmList[0][2] and self.lmList[0][1] < self.lmList[5][1] and self.lmList[0][1] > self.lmList[17][1]:
+                orientation = 'Palm Facing Camera & South'
+
+            elif (self.lmList[5][1] > self.lmList[17][1]) and self.lmList[5][2] < self.lmList[0][2] and self.lmList[0][1] < self.lmList[5][1] and self.lmList[0][1] > self.lmList[17][1]:
+                orientation = 'Backhand Facing Camera & North'
+            elif (self.lmList[5][1] > self.lmList[17][1]) and self.lmList[5][2] < self.lmList[0][2] and self.lmList[0][1] < self.lmList[5][1] and self.lmList[0][2] > self.lmList[17][2]:
+                orientation = 'Backhand Facing Camera & North-East'
+
+        return orientation
 
 
 def main():
@@ -258,7 +282,7 @@ def main():
     while True:
         success, img = cap.read()
         img = detector.findHands(img)
-        lmList = detector.findPosition(img)
+        lmList, null = detector.findPosition(img)
         # If there are landmarks detected, print the position of the tip of the index finger. Also to avoid index out of range error.
         if len(lmList) != 0:
             print(lmList[8]) # Print the position of the tip of the index finger

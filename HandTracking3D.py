@@ -1,8 +1,8 @@
 __author__ = 'mkv-aql'
-__author__ = 'mkv-aql'
 import cv2
 import mediapipe as mp
 import time
+
 
 cap = cv2.VideoCapture(0)
 
@@ -21,21 +21,15 @@ while True:
     imgRGB = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
     results = hands.process(imgRGB)
     #Extracting the landmarks from results
-    #print(results.multi_hand_landmarks)
         #If there are hands detected, for each hand (handLms), draw the landmarks and show id no. with its location.
     if results.multi_hand_landmarks:
         for handLms in results.multi_hand_landmarks:
             mpDraw.draw_landmarks(img, handLms, mpHands.HAND_CONNECTIONS)
             for id, lm in enumerate(handLms.landmark):
-                #print(id, lm) #id is the landmark id no. and lm is the landmark location. id = 0 is the palm of the hand, id = 4 is thw tip of the thumb
                 h, w, c = img.shape
-                cx, cy = int(lm.x*w), int(lm.y*h)
-                cz = results.multi_hand_landmarks[-1].landmark[-1].z
+                cx, cy, cz = int(lm.x*w), int(lm.y*h), lm.z
                 cz = int(cz*convert)
-                print(id, cx, cy, cz) #id is the landmark id no. and lm is the landmark location. id = 0 is the palm of the hand, id = 4 is thw tip of the thumb
-                #print(results.multi_hand_landmarks[-1].landmark[-1].z)
-                if id == 4:
-                    cv2.circle(img, (cx, cy), 15, (255, 0, 255), cv2.FILLED) #Draw a circle on the tip of the thumb
+                print(id, cx, cy, cz)
 
     #For fps calculation
     cTime = time.time()
@@ -43,8 +37,6 @@ while True:
     pTime = cTime
     #Draw fps on image
     cv2.putText(img, str(int(fps)), (10,70), cv2.FONT_HERSHEY_PLAIN, 2, (255,0,255), 2)
-
-
 
 
     cv2.imshow("Image", img)

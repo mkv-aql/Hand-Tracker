@@ -25,8 +25,8 @@ while True:
             for id, lm in enumerate(handLms.landmark):
                 #print(id, lm) #id is the landmark id no. and lm is the landmark location. id = 0 is the palm of the hand, id = 4 is thw tip of the thumb
                 h, w, c = img.shape
-                cx, cy = int(lm.x*w), int(lm.y*h)
-                print(id, cx, cy) #id is the landmark id no. and lm is the landmark location. id = 0 is the palm of the hand, id = 4 is thw tip of the thumb
+                cx, cy, cz = int(lm.x*w), int(lm.y*h), lm.z
+                print(id, cx, cy, cz) #id is the landmark id no. and lm is the landmark location. id = 0 is the palm of the hand, id = 4 is thw tip of the thumb
                 if id == 4:
                     cv2.circle(img, (cx, cy), 15, (255, 0, 255), cv2.FILLED) #Draw a circle on the tip of the thumb
 

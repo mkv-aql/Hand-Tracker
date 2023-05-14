@@ -20,10 +20,11 @@ cTime = 0
 while True:
     success, img = cap.read()
     img = detector.findHands(img, draw = False) # draw = False to get rid of the hand lines
-    lmList, null = detector.findPosition(img, draw = True) # draw = False to avoid drawing the circles on the chosen landmarks, but still tracks location of the landmarks
+    lmList, null = detector.findPosition(img, draw = False) # draw = False to avoid drawing the circles on the chosen landmarks, but still tracks location of the landmarks
     # If there are landmarks detected, print the position of the tip of the index finger. Also to avoid index out of range error.
     if len(lmList) != 0:
-        print(lmList[0]) # Print the position of the tip of the palm
+        #print(lmList[5]) # Print the position of the tip of the palm
+        #print(lmList[17])  # Print the position of the tip of the palm
         print(detector.checkOrientation(img, lr = lmList[0][4])) # Print the orientation of the hand
 
 

@@ -13,6 +13,9 @@ Update 29.4.2023:
 
 Update 1.5.2023:
 -Added withBoundaries function to find the landmarks within the boundaries (in Class)
+
+Update 4.5.2023:
+-Added checkOrientation function to check the orientation of the hand (in Class)
 '''
 import cv2
 import mediapipe as mp
@@ -76,8 +79,9 @@ class HandDetector():
                     lr = 'Left'
 
                 h, w, c = img.shape
-                cx, cy = int(lm.x * w), int(lm.y * h)
-                cz = round(self.results.multi_hand_landmarks[-1].landmark[-1].z, 5)
+                cx, cy, cz = int(lm.x * w), int(lm.y * h), round(lm.z * 100, 5)  # cx, cy are the coordinates of the landmarks, cz is the depth of the landmark (normalized, but scaled up to 100) (10.5.2023)
+                #cz = round(self.results.multi_hand_landmarks[-1].landmark[-1].z, 5)
+
                 #Append cx, cy values into the list (15.4.2023)
                 xList.append(cx)
                 yList.append(cy)
@@ -245,27 +249,42 @@ class HandDetector():
         else:
             return False
 
-    def checkOrientation(self, img, lr, tolerance = 0.1):
+    def checkOrientation(self, img, lr, tolerance = 1):
         orientation = ''
-        tolerance = tolerance
+
+        depthReference = np.mean([self.lmList[5][3], self.lmList[17][3]])
+
+        close = math.isclose(self.lmList[5][3], self.lmList[17][3], rel_tol=tolerance, abs_tol=0.0)
+
         if lr == "Left":
-            if (self.lmList[5][1] < self.lmList[17][1]) and self.lmList[5][2] < self.lmList[0][2] and self.lmList[0][1] > self.lmList[5][1] and self.lmList[0][1] < self.lmList[17][1]:
+            if (self.lmList[5][1] < self.lmList[17][1]) and self.lmList[5][2] < self.lmList[0][2] and self.lmList[0][1] > self.lmList[5][1] and self.lmList[0][1] < self.lmList[17][1] and close == True:
                 orientation = 'Palm Facing Camera & North'
-            elif (self.lmList[5][1] < self.lmList[17][1]) and self.lmList[5][2] < self.lmList[0][2] and self.lmList[0][1] < self.lmList[5][1] and self.lmList[0][1] < self.lmList[17][1]:
+            elif (self.lmList[5][1] < self.lmList[17][1]) and self.lmList[5][2] < self.lmList[0][2] and self.lmList[0][1] < self.lmList[5][1] and self.lmList[0][1] < self.lmList[17][1] and close == True:
                 orientation = 'Palm Facing Camera & North-East'
-            elif (self.lmList[5][1] < self.lmList[17][1]) and self.lmList[5][2] < self.lmList[0][2] and self.lmList[0][1] > self.lmList[5][1] and self.lmList[0][1] > self.lmList[17][1]:
+            elif (self.lmList[5][1] < self.lmList[17][1]) and self.lmList[5][2] < self.lmList[0][2] and self.lmList[0][1] > self.lmList[5][1] and self.lmList[0][1] > self.lmList[17][1] and close == True:
                 orientation = 'Palm Facing Camera & North-West'
-            elif (self.lmList[0][1] < self.lmList[17][1]) and self.lmList[0][2] > self.lmList[5][2] and self.lmList[0][1] < self.lmList[5][1] and self.lmList[0][2] < self.lmList[17][2]:
+            elif (self.lmList[0][1] < self.lmList[17][1]) and self.lmList[0][2] > self.lmList[5][2] and self.lmList[0][1] < self.lmList[5][1] and self.lmList[0][2] < self.lmList[17][2] and close == True:
                 orientation = 'Palm Facing Camera & East'
-            elif (self.lmList[17][1] < self.lmList[0][1]) and self.lmList[5][2] > self.lmList[0][2] and self.lmList[5][1] < self.lmList[0][1] and self.lmList[17][2] < self.lmList[0][2]:
+            elif (self.lmList[17][1] < self.lmList[0][1]) and self.lmList[5][2] > self.lmList[0][2] and self.lmList[5][1] < self.lmList[0][1] and self.lmList[17][2] < self.lmList[0][2] and close == True:
                 orientation = 'Palm Facing Camera & West'
-            elif (self.lmList[5][1] > self.lmList[17][1]) and self.lmList[5][2] > self.lmList[0][2] and self.lmList[0][1] < self.lmList[5][1] and self.lmList[0][1] > self.lmList[17][1]:
+            elif (self.lmList[5][1] > self.lmList[17][1]) and self.lmList[5][2] > self.lmList[0][2] and self.lmList[0][1] < self.lmList[5][1] and self.lmList[0][1] > self.lmList[17][1] and close == True:
                 orientation = 'Palm Facing Camera & South'
 
-            elif (self.lmList[5][1] > self.lmList[17][1]) and self.lmList[5][2] < self.lmList[0][2] and self.lmList[0][1] < self.lmList[5][1] and self.lmList[0][1] > self.lmList[17][1]:
+            elif (self.lmList[5][1] > self.lmList[17][1]) and self.lmList[5][2] < self.lmList[0][2] and self.lmList[0][1] < self.lmList[5][1] and self.lmList[0][1] > self.lmList[17][1] and close == True:
                 orientation = 'Backhand Facing Camera & North'
-            elif (self.lmList[5][1] > self.lmList[17][1]) and self.lmList[5][2] < self.lmList[0][2] and self.lmList[0][1] < self.lmList[5][1] and self.lmList[0][2] > self.lmList[17][2]:
+            elif (self.lmList[5][1] > self.lmList[17][1]) and self.lmList[5][2] < self.lmList[0][2] and self.lmList[0][1] < self.lmList[5][1] and self.lmList[0][2] > self.lmList[17][2] and close == True:
                 orientation = 'Backhand Facing Camera & North-East'
+            elif (self.lmList[17][1] < self.lmList[5][1] < self.lmList[0][1] and self.lmList[5][2] < self.lmList[17][2] < self.lmList[0][2]) and close == True:
+                orientation = 'Backhand Facing Camera & North-West'
+            elif (self.lmList[5][1] < self.lmList[0][1] and self.lmList[17][1] < self.lmList[0][1] and self.lmList[5][2] < self.lmList[0][2] < self.lmList[17][2]) and close == True:
+                orientation = 'Backhand Facing Camera & West'
+            elif (self.lmList[0][1] < self.lmList[17][1] and self.lmList[0][1] < self.lmList[5][1] and self.lmList[17][2] < self.lmList[0][2] < self.lmList[5][2]) and close == True:
+                orientation = 'Backhand Facing Camera & East'
+
+            elif (self.lmList[5][2] < self.lmList[0][2] and self.lmList[17][3] > depthReference > self.lmList[5][3] and close == False):
+                orientation = 'Thumb Facing Camera & North'
+            elif (self.lmList[5][2] < self.lmList[0][2] and self.lmList[17][3] < depthReference < self.lmList[5][3] and close == False):
+                orientation = 'Pinky Facing Camera & North'
 
         return orientation
 

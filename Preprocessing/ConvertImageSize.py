@@ -16,3 +16,5 @@ for imPath in myList:
     image = cv2.resize(image, (200, 200))
     cv2.imwrite(f'{folderPath}/{imPath}', image)
 
+    #cv2.imwrite(f'{cat_resized_dir}/{filename}', image)
+

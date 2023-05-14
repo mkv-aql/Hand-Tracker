@@ -49,6 +49,7 @@ def main():
         glRotatef(angle, 3, 1, 1)
 
         om.drawCube(scale = 0.5, centerCoords = (0, 0, 0))
+        om.drawArrow(scale = 0.5, centerCoords = (1, 1, 0), color = (1.0, 0.0, 0.0))
 
         glfw.swap_buffers(window)
         glfw.poll_events()
